@@ -1,4 +1,5 @@
 import {
+  GraphQLBoolean,
   GraphQLEnumType,
   GraphQLFloat,
   GraphQLInt,
@@ -7,55 +8,90 @@ import {
   GraphQLObjectType,
   GraphQLSchema,
   GraphQLString,
-} from 'graphql/index.js';
+} from 'graphql';
 
-const MemberTypeId = new GraphQLEnumType({
-  name: 'MemberTypeId',
+const memberTypeId = new GraphQLEnumType({
+  name: 'memberTypeId',
   values: {
     BASIC: { value: 'BASIC' },
     BUSINESS: { value: 'BUSINESS' },
   },
 });
 
-const MemberType = new GraphQLObjectType({
-  name: 'MemberType',
+const memberType = new GraphQLObjectType({
+  name: 'memberType',
   fields: {
-    id: { type: new GraphQLNonNull(MemberTypeId) },
+    id: { type: new GraphQLNonNull(memberTypeId) },
     discount: { type: new GraphQLNonNull(GraphQLFloat) },
     postsLimitPerMonth: { type: new GraphQLNonNull(GraphQLInt) },
   },
 });
 
-// const Post = new GraphQLObjectType({
-//   name: 'Post',
-//   fields: {
-//     id: { type: GraphQLString },
-//     title: { type: GraphQLString },
-//     content: { type: GraphQLString },
-//   },
-// });
-/////////////////////////////////////////////////////////////////////////
+const postType = new GraphQLObjectType({
+  name: 'post',
+  fields: {
+    id: { type: GraphQLString },
+    title: { type: GraphQLString },
+    content: { type: GraphQLString },
+  },
+});
+
+const userType = new GraphQLObjectType({
+  name: 'user',
+  fields: {
+    id: { type: GraphQLString },
+    name: { type: GraphQLString },
+    balance: { type: GraphQLFloat },
+  },
+});
+
+const profileType = new GraphQLObjectType({
+  name: 'profile',
+  fields: {
+    id: { type: GraphQLString },
+    isMale: { type: GraphQLBoolean },
+    yearOfBirth: { type: GraphQLInt },
+  },
+});
 
 const RootQuery = new GraphQLObjectType({
   name: 'RootQuery',
   fields: {
     memberTypes: {
-      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(MemberType))),
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(memberType))),
       resolve: async (_, __, { prisma }) => {
         return await prisma.memberType.findMany();
       },
     },
     memberType: {
-      type: MemberType,
+      type: memberType,
       args: {
-        id: { type: new GraphQLNonNull(MemberTypeId) },
+        id: { type: memberTypeId },
       },
-      resolve: async (_, args, { prisma }) => {
+      resolve: async (_, { id }, { prisma }) => {
         return await prisma.memberType.findUnique({
           where: {
-            id: args.id,
+            id: id,
           },
         });
+      },
+    },
+    posts: {
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(postType))),
+      resolve: async (_, __, { prisma }) => {
+        return await prisma.post.findMany();
+      },
+    },
+    users: {
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(userType))),
+      resolve: async (_, __, { prisma }) => {
+        return await prisma.user.findMany();
+      },
+    },
+    profiles: {
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(profileType))),
+      resolve: async (_, __, { prisma }) => {
+        return await prisma.profile.findMany();
       },
     },
   },
