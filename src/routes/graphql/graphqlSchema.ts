@@ -66,9 +66,17 @@ const userType = new GraphQLObjectType({
 const profileType = new GraphQLObjectType({
   name: 'profile',
   fields: {
-    id: { type: GraphQLString },
+    id: { type: new GraphQLNonNull(UUIDType) },
     isMale: { type: GraphQLBoolean },
     yearOfBirth: { type: GraphQLInt },
+    memberType: {
+      type: memberType,
+      resolve: async (parent, _, { prisma }) => {
+        return await prisma.memberType.findUnique({
+          where: { id: parent.memberTypeId },
+        });
+      },
+    },
   },
 });
 
