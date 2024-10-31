@@ -30,9 +30,9 @@ const memberType = new GraphQLObjectType({
 const postType = new GraphQLObjectType({
   name: 'post',
   fields: {
-    id: { type: GraphQLString },
-    title: { type: GraphQLString },
-    content: { type: GraphQLString },
+    id: { type: UUIDType },
+    title: { type: new GraphQLNonNull(GraphQLString) },
+    content: { type: new GraphQLNonNull(GraphQLString) },
   },
 });
 
