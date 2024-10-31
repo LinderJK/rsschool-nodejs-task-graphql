@@ -108,16 +108,55 @@ const RootQuery = new GraphQLObjectType({
         return await prisma.post.findMany();
       },
     },
+    post: {
+      type: postType,
+      args: {
+        id: { type: UUIDType },
+      },
+      resolve: async (_, { id }, { prisma }) => {
+        return await prisma.post.findUnique({
+          where: {
+            id: id,
+          },
+        });
+      },
+    },
     users: {
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(userType))),
       resolve: async (_, __, { prisma }) => {
         return await prisma.user.findMany();
       },
     },
+    user: {
+      type: userType,
+      args: {
+        id: { type: UUIDType },
+      },
+      resolve: async (_, { id }, { prisma }) => {
+        return await prisma.user.findUnique({
+          where: {
+            id: id,
+          },
+        });
+      },
+    },
     profiles: {
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(profileType))),
       resolve: async (_, __, { prisma }) => {
         return await prisma.profile.findMany();
+      },
+    },
+    profile: {
+      type: profileType,
+      args: {
+        id: { type: UUIDType },
+      },
+      resolve: async (_, { id }, { prisma }) => {
+        return await prisma.profile.findUnique({
+          where: {
+            id: id,
+          },
+        });
       },
     },
   },
