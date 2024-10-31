@@ -9,6 +9,7 @@ import {
   GraphQLSchema,
   GraphQLString,
 } from 'graphql';
+import { UUIDType } from './types/uuid.js';
 
 const memberTypeId = new GraphQLEnumType({
   name: 'memberTypeId',
@@ -38,11 +39,28 @@ const postType = new GraphQLObjectType({
 
 const userType = new GraphQLObjectType({
   name: 'user',
-  fields: {
-    id: { type: GraphQLString },
-    name: { type: GraphQLString },
-    balance: { type: GraphQLFloat },
-  },
+  fields: () => ({
+    id: { type: new GraphQLNonNull(UUIDType) },
+    name: { type: new GraphQLNonNull(GraphQLString) },
+    balance: { type: new GraphQLNonNull(GraphQLFloat) },
+    profile: {
+      type: profileType,
+      resolve: async (parent, _, { prisma }) => {
+        return await prisma.profile.findUnique({
+          where: { userId: parent.id },
+          include: { memberType: true },
+        });
+      },
+    },
+    posts: {
+      type: new GraphQLList(postType),
+      resolve: async (parent, _, { prisma }) => {
+        return await prisma.post.findMany({
+          where: { userId: parent.id },
+        });
+      },
+    },
+  }),
 });
 
 const profileType = new GraphQLObjectType({
