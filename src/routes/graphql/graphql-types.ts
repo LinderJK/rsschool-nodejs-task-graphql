@@ -18,13 +18,21 @@ export const MemberTypeId = new GraphQLEnumType({
   },
 });
 
-const memberType = new GraphQLObjectType({
+export const memberType = new GraphQLObjectType({
   name: 'memberType',
-  fields: {
-    id: { type: new GraphQLNonNull(memberTypeId) },
+  fields: () => ({
+    id: { type: new GraphQLNonNull(MemberTypeId) },
     discount: { type: new GraphQLNonNull(GraphQLFloat) },
     postsLimitPerMonth: { type: new GraphQLNonNull(GraphQLInt) },
-  },
+    profiles: {
+      type: new GraphQLList(new GraphQLNonNull(profileType)),
+      resolve: async (parent, _, { prisma }) => {
+        return await prisma.profile.findMany({
+          where: { memberTypeId: parent.id },
+        });
+      },
+    },
+  }),
 });
 
 const postType = new GraphQLObjectType({
