@@ -96,6 +96,33 @@ const graphqlMutations = new GraphQLObjectType({
         });
       },
     },
+    deleteUser: {
+      type: GraphQLString,
+      args: {
+        id: { type: new GraphQLNonNull(UUIDType) },
+      },
+      resolve: async (_, { id }, { prisma }) => {
+        await prisma.user.delete({ where: { id } });
+      },
+    },
+    deletePost: {
+      type: GraphQLString,
+      args: {
+        id: { type: new GraphQLNonNull(UUIDType) },
+      },
+      resolve: async (_, { id }, { prisma }) => {
+        await prisma.post.delete({ where: { id } });
+      },
+    },
+    deleteProfile: {
+      type: GraphQLString,
+      args: {
+        id: { type: new GraphQLNonNull(UUIDType) },
+      },
+      resolve: async (_, { id }, { prisma }) => {
+        await prisma.profile.delete({ where: { id } });
+      },
+    },
   },
 });
 
