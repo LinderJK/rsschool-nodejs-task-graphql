@@ -36,9 +36,14 @@ const RootQuery = new GraphQLObjectType({
       },
     },
     posts: {
+      args: {
+        authorId: { type: UUIDType },
+      },
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(postType))),
-      resolve: async (_, __, { prisma }) => {
-        return await prisma.post.findMany();
+      resolve: async (_, { authorId }, { prisma }) => {
+        return await prisma.post.findMany({
+          where: { authorId: authorId },
+        });
       },
     },
     post: {
