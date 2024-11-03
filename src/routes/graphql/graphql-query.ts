@@ -21,7 +21,7 @@ const RootQuery = new GraphQLObjectType({
     memberType: {
       type: memberType,
       args: {
-        id: { type: memberTypeId },
+        id: { type: MemberTypeId },
       },
       resolve: async (_, { id }, { prisma }) => {
         return await prisma.memberType.findUnique({
