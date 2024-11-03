@@ -93,6 +93,28 @@ const RootQuery = new GraphQLObjectType({
         });
       },
     },
+    subscribedToUser: {
+      type: new GraphQLList(subscribersOnAuthorsType),
+      args: {
+        authorId: { type: UUIDType },
+      },
+      resolve: async (_, { authorId }, { prisma }) => {
+        return prisma.subscribersOnAuthors.findMany({
+          where: { authorId: authorId },
+        });
+      },
+    },
+    userSubscribedTo: {
+      type: new GraphQLList(subscribersOnAuthorsType),
+      args: {
+        userId: { type: UUIDType },
+      },
+      resolve: async (_, { userId }, { prisma }) => {
+        return prisma.subscribersOnAuthors.findMany({
+          where: { subscriberId: userId },
+        });
+      },
+    },
   },
 });
 
