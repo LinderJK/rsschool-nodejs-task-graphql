@@ -1,17 +1,13 @@
-import {
-  GraphQLList,
-  GraphQLNonNull,
-  GraphQLObjectType,
-  GraphQLSchema,
-} from 'graphql/index.js';
+import { GraphQLList, GraphQLNonNull, GraphQLObjectType } from 'graphql/index.js';
+import { UUIDType } from './types/uuid.js';
 import {
   memberType,
-  memberTypeId,
+  MemberTypeId,
   postType,
   profileType,
+  subscribersOnAuthorsType,
   userType,
 } from './graphql-types.js';
-import { UUIDType } from './types/uuid.js';
 
 const RootQuery = new GraphQLObjectType({
   name: 'RootQuery',
