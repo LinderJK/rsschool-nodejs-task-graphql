@@ -83,7 +83,7 @@ const RootQuery = new GraphQLObjectType({
     profile: {
       type: profileType,
       args: {
-        id: { type: UUIDType },
+        id: { type: new GraphQLNonNull(UUIDType) },
       },
       resolve: async (_, { id }, { prisma }) => {
         return await prisma.profile.findUnique({

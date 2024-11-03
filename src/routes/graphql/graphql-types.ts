@@ -126,14 +126,14 @@ export const postType = new GraphQLObjectType({
       type: userType,
       resolve: async (parent, _, { prisma }) => {
         return await prisma.user.findUnique({
-          where: { id: parent.id },
+          where: { id: parent.authorId },
         });
       },
     },
     authorId: {
       type: new GraphQLNonNull(UUIDType),
       resolve: (parent) => {
-        return parent.id;
+        return parent.authorId;
       },
     },
   },
